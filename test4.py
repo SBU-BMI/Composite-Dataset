@@ -1,29 +1,16 @@
 
-
-print('----starting -----')
-#from shapely.geometry import Point
-#patch = Point(0.0, 0.0).buffer(10.0)
-#print patch
-#for x in range(0, 60):
-    #print "We're on time %d" % (x);
-
-#exit();
-
-
 from pymongo import MongoClient
-import pprint
-
 from shapely.geometry import LineString
 from shapely.geometry.polygon import LinearRing
 from shapely.geometry import Polygon
-import numpy as np
-import time
 from bson import json_util 
+import numpy as np
 import json 
+import pprint
+import time
 
 
 start_time = time.time();
-
 
 db_host="quip3.bmi.stonybrook.edu"
 db_port="27017"
