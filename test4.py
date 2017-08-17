@@ -12,8 +12,13 @@ import time
 
 start_time = time.time();
 
-db_host="quip3.bmi.stonybrook.edu"
-db_port="27017"
+# -- input parameters--
+db_host="quip3.bmi.stonybrook.edu";
+db_port="27017";
+case_id="17035671";
+subject_id="17035671";
+execution_id="helen.wong_composite_input";
+execution_id_array=[];
 
 client = MongoClient('mongodb://'+db_host+':'+db_port+'/')
 #client = MongoClient('mongodb://quip3.bmi.stonybrook.edu:27017/')
@@ -21,10 +26,6 @@ db = client.quip
 collection = db.objects
 metadata=db.metadata
 
-case_id="17035671"
-subject_id="17035671"
-execution_id="helen.wong_composite_input"
-execution_id_array=[]
 
 #pprint.pprint(collection.find_one({"provenance.image.case_id":"17035671",
 #              "provenance.image.subject_id":"17035671",
