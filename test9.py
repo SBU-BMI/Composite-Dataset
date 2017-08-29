@@ -25,6 +25,7 @@ if __name__ == '__main__':
   main_dir =os.path.join(my_home, 'results/'); 
   out_dir  =os.path.join(my_home, 'composite_results/');
   
+  print 'copy master csv file analysis_list.csv from nfs001 node';  
   remote_folder="nfs001:/data/shared/tcga_analysis/seer_data/";  
   analysis_list_csv = os.path.join(my_home, 'analysis_list.csv');         
   if not os.path.isfile(analysis_list_csv):
@@ -46,6 +47,7 @@ if __name__ == '__main__':
   algorithms=[];
   prefixs=[]; 
   total_involve_tile=0;  
+  print 'get all algorithmS from mongo DB';
   for algorithm in objects.distinct("algorithm",{"provenance.image.case_id":case_id,
                                              "provenance.image.subject_id":subject_id,
                                              "provenance.analysis.execution_id":execution_id}): 
@@ -69,7 +71,6 @@ if __name__ == '__main__':
   total_algorithms=index;
   print total_algorithms  
   
-  #copy all csv and json file from nfs001 node
   print 'copy all csv and json file from nfs001 node ---- ';
   start_copy_time = time.time();
   for index1 in range (0,total_algorithms):
