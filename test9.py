@@ -22,8 +22,8 @@ if __name__ == '__main__':
   csv.field_size_limit(sys.maxsize);
   
   my_home='/home/bwang/shapely/';
-  main_dir =os.path.join(my_home, 'results16/'); 
-  out_dir  =os.path.join(my_home, 'composite_results16/');
+  main_dir =os.path.join(my_home, 'results/'); 
+  out_dir  =os.path.join(my_home, 'composite_results/');
   
   remote_folder="nfs001:/data/shared/tcga_analysis/seer_data/";  
   analysis_list_csv = os.path.join(my_home, 'analysis_list.csv');         
