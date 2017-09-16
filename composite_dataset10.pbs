@@ -21,4 +21,19 @@ cd $PBS_O_WORKDIR
 
 python composite_dataset.py  $(hostname) images_part10 
 
-exit 0;
+#sync composite_results to storage node
+LOCALDIR1="/data1/bwang/results"
+LOCALDIR2="/data1/bwang/composite_results"
+DESTDIR="/data/shared/bwang/composite_results"
+DESTHOST="nfs003"
+
+echo ssh $DESTHOST mkdir -p $DESTDIR
+ssh $DESTHOST mkdir -p $DESTDIR
+
+echo rsync -avr  $LOCALDIR/ $DESTHOST:$DESTDIR/
+rsync -avr $LOCALDIR2/ $DESTHOST:$DESTDIR/
+
+rm -rf $LOCALDIR2
+rm -rf $LOCALDIR1
+
+exit 0
