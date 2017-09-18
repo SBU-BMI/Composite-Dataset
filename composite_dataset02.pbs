@@ -19,7 +19,7 @@ echo "-----------------------------------------------------"
 #copy segmen result files from storage node
 DATAHOST="nfs001"
 DESTHOST="nfs004"
-input_file="images_part01"
+input_file="images_part02"
 LOCALHOME="/data1/bwang"
 LOCALDIR_RESULTS=$LOCALHOME/results
 LOCALDIR_COMPOSITE_RESULTS=$LOCALHOME/composite_results
