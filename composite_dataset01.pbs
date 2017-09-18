@@ -25,17 +25,17 @@ LOCALDIR_RESULTS=$LOCALHOME/results
 LOCALDIR_COMPOSITE_RESULTS=$LOCALHOME/composite_results
 DATADIR="/data/shared/tcga_analysis/seer_data/results"
 DESTDIR="/data/shared/bwang/composite_results"
-master_csv_file_path="/data/shared/tcga_analysis/seer_data/analysis_list.csv"
 IFS=$'\n' read -d '' -r -a caseid_list < $LOCALHOME/$input_file
-master_csv_file=$LOCALHOME/analysis_list.csv
-if [ ! -f $master_csv_file ]; then
-    echo "Master CSV File not found!"
-    scp $DATAHOST:$master_csv_file_path $LOCALHOME/analysis_list.csv
-fi
+
+#generate prefix list of each case_id 
+cd $PBS_O_WORKDIR
+python find_caseid_prefix.py $input_file 
+
+caseid_prefix_file=$LOCALHOME/caseid_prefix
 
 for case_id in "${caseid_list[@]}"
 do  
-  prefix_str=`grep $case_id  $master_csv_file | awk -F ',' '{print $2}'`;  
+  prefix_str=`grep $case_id  $caseid_prefix_file | awk -F ',' '{print $2}'`;  
   prefix_array=($prefix_str)  
   tLen=${#prefix_array[@]} 
   for (( i=0; i<${tLen}; i++ ));
@@ -45,13 +45,12 @@ do
     if [ ! -d "$local_folder" ]; then  
       echo "Folder $local_folder is not found, then create it!"     
       mkdir -p $local_folder
-    fi    
-    remote_folder=$DATAHOST:$DATADIR/$case_id/$prefix
-    #echo $remote_folder
+    fi  
+    echo $local_folder      
+    remote_folder=$DATAHOST:$DATADIR/$case_id/$prefix  
+    echo $remote_folder  
     json_remote_files=$remote_folder/*.json    
-    csv_remote_files=$remote_folder/*features.csv
-    #echo scp $json_remote_files $local_folder
-    #echo scp $csv_remote_files $local_folder
+    csv_remote_files=$remote_folder/*features.csv    
     scp $json_remote_files $local_folder
     scp $csv_remote_files $local_folder
   done  
@@ -67,10 +66,10 @@ ssh $DESTHOST mkdir -p $DESTDIR
 echo rsync -avr  $LOCALDIR/ $DESTHOST:$DESTDIR/
 rsync -av -r $LOCALDIR_COMPOSITE_RESULTS/ $DESTHOST:$DESTDIR/
 
+rm $caseid_prefix_file
 rm -rf $LOCALDIR_RESULTS
 rm -rf $LOCALDIR_COMPOSITE_RESULTS
 
 echo "-----------------------------------------------------"
 echo "Date: $(date)"
 echo "-----------------------------------------------------"
-
