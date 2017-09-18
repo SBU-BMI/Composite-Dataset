@@ -219,36 +219,7 @@ if __name__ == '__main__':
     user=user_case_id[1];    
     prefixs_algorithm=user_case_id[2];    
     total_annotation_count=user_case_id[3];  
-    polygon_algorithm=user_case_id[4];  
-    
-    """        
-    print " --- case_id  and user are %s / %s  -------" % (case_id,user);      
-    execution_id=user +"_composite_input"; 
-    new_execution_id=user +"_composite_dataset";           
-    print '----- get human markups for this image and this user -----'; 
-    polygon_algorithm=[[0 for y in xrange(2)] for x in xrange(1000)]; 
-    index=0;  
-    #print "case_id %s subject_id %s execution_id %s." % (case_id,subject_id,execution_id);
-    for annotation in objects.find({"provenance.image.case_id":case_id,
-                                    "provenance.image.subject_id":subject_id,
-                                    "provenance.analysis.execution_id": execution_id
-            },{"_id":0,"geometry.coordinates":1,"algorithm":1}):  
-      polygon=annotation["geometry"]["coordinates"][0];
-      #some polygon is out of boundry. So check the value of first Point 
-      x=polygon[0][0];
-      y=polygon[0][1];
-      if(x<0.0 or x>1.0):
-        continue;
-      if(y<0.0 or y>1.0):
-        continue;  
-      algorithm=annotation["algorithm"];
-      polygon_algorithm[index][0]=algorithm;
-      polygon_algorithm[index][1]=polygon;       
-      index+=1;      
-    print 'total annotation number is %d' % index; 
-    total_annotation_count = index;    
-    print polygon_algorithm;   
-    """    
+    polygon_algorithm=user_case_id[4];       
     
     print '-- find all annotations NOT within another annotation  -- ';
     polygon_algorithm_final=[[0 for y in xrange(3)] for x in xrange(1000)]; 
