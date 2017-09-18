@@ -16,24 +16,60 @@
 echo "-----------------------------------------------------"
 echo "Date: $(date)                     Host:$(hostname)"
 echo "-----------------------------------------------------"
+#copy segmen result files from storage node
+DATAHOST="nfs001"
+DESTHOST="nfs004"
+input_file="images_part10"
+LOCALHOME="/data1/bwang"
+LOCALDIR_RESULTS=$LOCALHOME/results
+LOCALDIR_COMPOSITE_RESULTS=$LOCALHOME/composite_results
+DATADIR="/data/shared/tcga_analysis/seer_data/results"
+DESTDIR="/data/shared/bwang/composite_results"
+IFS=$'\n' read -d '' -r -a caseid_list < $LOCALHOME/$input_file
+
+#generate prefix list of each case_id 
+cd $PBS_O_WORKDIR
+python find_caseid_prefix.py $input_file 
+
+caseid_prefix_file=$LOCALHOME/caseid_prefix
+
+for case_id in "${caseid_list[@]}"
+do  
+  prefix_str=`grep $case_id  $caseid_prefix_file | awk -F ',' '{print $2}'`;  
+  prefix_array=($prefix_str)  
+  tLen=${#prefix_array[@]} 
+  for (( i=0; i<${tLen}; i++ ));
+  do
+    prefix=${prefix_array[$i]}    
+    local_folder=$LOCALDIR_RESULTS/$case_id/$prefix
+    if [ ! -d "$local_folder" ]; then  
+      echo "Folder $local_folder is not found, then create it!"     
+      mkdir -p $local_folder
+    fi  
+    echo $local_folder      
+    remote_folder=$DATAHOST:$DATADIR/$case_id/$prefix  
+    echo $remote_folder  
+    json_remote_files=$remote_folder/*.json    
+    csv_remote_files=$remote_folder/*features.csv    
+    scp $json_remote_files $local_folder
+    scp $csv_remote_files $local_folder
+  done  
+done
 
 cd $PBS_O_WORKDIR
-
-python composite_dataset.py  $(hostname) images_part10 
+python composite_dataset.py  $(hostname) $input_file 
 
 #sync composite_results to storage node
-LOCALDIR1="/data1/bwang/results"
-LOCALDIR2="/data1/bwang/composite_results"
-DESTDIR="/data/shared/bwang/composite_results"
-DESTHOST="nfs003"
-
 echo ssh $DESTHOST mkdir -p $DESTDIR
 ssh $DESTHOST mkdir -p $DESTDIR
 
 echo rsync -avr  $LOCALDIR/ $DESTHOST:$DESTDIR/
-rsync -avr $LOCALDIR2/ $DESTHOST:$DESTDIR/
+rsync -av -r $LOCALDIR_COMPOSITE_RESULTS/ $DESTHOST:$DESTDIR/
 
-rm -rf $LOCALDIR2
-rm -rf $LOCALDIR1
+rm $caseid_prefix_file
+rm -rf $LOCALDIR_RESULTS
+rm -rf $LOCALDIR_COMPOSITE_RESULTS
 
-exit 0
+echo "-----------------------------------------------------"
+echo "Date: $(date)"
+echo "-----------------------------------------------------"
