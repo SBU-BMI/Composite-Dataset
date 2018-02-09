@@ -29,21 +29,21 @@ step4: syn images,metadata and objectives  collections info
     at eagle.bmi.stonybrook.edu ~home/shapely/syn_db_quip3_to_175.py
 
 step5:load composite dataset to mongo db
- /home/feiqiao/shapely/load_composite_dataset.sh
+ at 175 server /home/feiqiao/shapely/load_composite_dataset.sh
  
 step 6:  syn images,metadata and objectives  collections info
     at eagle.bmi.stonybrook.edu ~home/shapely/syn_db_175_to_quip3.py 
 
 step7: copy composite dataset from 175 mongo db to quip3 mongo db 
  in eagle server:
- /home/bwang/shapely/synMongodb_new.sh 
- /home/bwang/shapely/synMongodb_new.pbs 
- /home/bwang/shapely/synMongodb_new.py
+   /home/bwang/shapely/synMongodb_new.sh 
+   /home/bwang/shapely/synMongodb_new.pbs 
+   /home/bwang/shapely/synMongodb_new.py
  
 step 8: copy composite_results to quip3 server
     in eagle nfs004 server, in folder  /data/shared/bwang/  
-  rsync -avr composite_results/ bwang@Quip3.bmi.stonybrook.edu:/data/home/bwang/composite_results/ 
- //remove duplicate folders from composite_results  before  rsync
+      rsync -avr composite_results/ bwang@Quip3.bmi.stonybrook.edu:/data/home/bwang/composite_results/ 
+     //remove duplicate folders from composite_results  before  rsync
  
 step 9: update table2.php at quip-viewer container at folder /var/www/html/table/table2.php
     to add new image to the list
