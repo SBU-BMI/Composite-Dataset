@@ -16,3 +16,5 @@
  create new folder composite_dataset at eagle nfs004 server in folder  /data/shared/bwang/
   
  the composite dataset is stored at  eagle.bmi.stonybrook.edu nfs004 server in folder  /data/shared/bwang/composite_results
+ 
+ After composite dataset is created, following the steps described in readme2.txt to complete the rest procedures.
