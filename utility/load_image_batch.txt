@@ -1,0 +1,84 @@
+0. copy images from remote host to local host
+- make dir in local host to copy images from remote host
+mkdir images
+cd images/
+-
+rsync -av alina@osprey.bmi.stonybrook.edu:/home/data/tcga_data/luad/*.svs .
+
+
+b Bridge (scp -secure copy)
+scp  alina@osprey.bmi.stonybrook.edu:/home/data/tcga_data/luad/*.svs .
+
+IMAGES_DIR= "/home/feiqiao/quip2/img"
+
+1.  
+docker stop quip-loader
+2.  
+docker rm -f quip-loader
+
+3. mapping local host image folder to docker loader image folder
+// copy from github
+## Run loader container
+loader_container=$(docker run --name quip-loader --net=quip_nw --restart unless-stopped -itd \
+	-v $IMAGES_DIR:/data/images \
+	-e "mongo_host=$(echo $mongo_host)" \
+	-e "mongo_port=$(echo $mongo_port)" \
+	-e "dataloader_host=$(echo $data_host)" \
+	-e "annotations_host=$(echo $data_host)" \
+	sbubmi/quip_loader:$VERSION)
+echo "Started loader container: " $loader_container
+
+
+docker run --name quip-loader --net=quip_nw --restart unless-stopped -itd \
+ -p 6002:3002 \
+ -v /home/feiqiao/quip2/img:/data/images \
+ -e "mongo_host=quip-data" 
+ -e "mongo_port=27017" \
+ -e "dataloader_host=http://quip-data:9099" \
+ -e "annotations_host=http://quip-data:9099" \
+ sbubmi/quip_loader:1.0
+
+4.  Create input.csv file and copy to the images folder
+
+ cd /home/alina/lymp_data/images/
+
+for i in `ls *.svs`; do a=`echo $i | cut -f 1 -d '.'`; echo $a,"default","/data/images/"$i; done >> ~/input.csv 
+for i in `ls *.svs`; do a=`echo $i | cut -f 1 -d '.'`; echo $a,"default","/home/feiqiao/shapely/img/VTR-IOWA/batch1/"$i; done >> ~/input.csv
+for i in `ls 17032548.svs`; do a=`echo $i | cut -f 1 -d '.'`; echo $a,"default","/data/images/"$i; done >> ./input.csv 
+
+for i in `ls *.svs`; do a=`echo $i | cut -f 1 -d '.'`; echo $a,"default","/data/images/"$i; done >> ./input.csv 
+
+where input.csv looks like:
+
+Id, study_id, File
+test,default,/data/images/CMU-1.svs
+image2,test,/data/images/test10.svs
+
+PC_052_0_1,default,/data/images/Hawaii/PC_052_0_1.svs
+PC_051_0_1,default,/data/images/Hawaii/PC_051_0_1.svs
+
+cp ~/input.csv .
+
+5. run python3 to load image metadata to mongodb
+ 
+docker exec -it quip-loader python3 /root/dataloader/DataLoader/dataLoader/dataloader.py \
+-i /data/images/input.csv \
+-o http://quip-data:9099/services/Camicroscope_DataLoader/DataLoader/submit/json \
+-a 4fbb38a3-1821-436c-a44d-8d3bc5efd33e
+
+//load metadata to quip database
+docker exec -it quip-loader python3 /root/dataloader/DataLoader/dataLoader/dataloader.py \
+-i /data/images/input.csv \
+-o http://quip-data:9099/services/Camicroscope_DataLoader/DataLoader/submit/json \
+-a 1ad76102-e3c8-4c8b-a544-9d46be45487f
+//notes:
+-a 1ad76102-e3c8-4c8b-a544-9d46be45487f is apikey in /home/feiqiao/quip2/configs/sample_apikey.json
+
+
+//load metadata to quip_comp database
+docker exec -it quip-loader python3 /root/dataloader/DataLoader/dataLoader/dataloader.py \
+-i /data/images/input.csv \
+-o http://quip-data:9099/services/Camicroscope_DataLoader_comp/DataLoader/submit/json \
+-a 1ad76102-e3c8-4c8b-a544-9d46be45487f
+
+
