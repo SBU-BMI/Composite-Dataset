@@ -9,7 +9,7 @@ PROGNAME=$(basename "$0")
 input_file="case_id_list_2018_4_18"
 IFS=$'\n' read -d '' -r -a caseid_list < $input_file
 echo $caseid_list;
-
+#quip3 host mount
 #"Source": "/data/seer_project/img",
 #"Destination": "/data/images",
 
