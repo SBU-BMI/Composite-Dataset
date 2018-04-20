@@ -11,7 +11,6 @@ import csv
 import sys
 import os
 import shutil
-#import concurrent.futures
 import subprocess
 import pipes
 import shlex
@@ -105,20 +104,6 @@ if __name__ == '__main__':
     subprocess.call(shlex.split('./load_composite_results.sh ' + case_id + '  ' + composite_results_folder ));
   print ' -- End of loading composite results into quip_comp database ---- ';
   exit();  
-  
-      
-  #tmp_caseid= sys.argv[1]   
-  #case_id_list = [ tmp_caseid ]; 
-  #print case_id_list;   
-  #my_home="/home/bwang/shapely"  
-  #my_home="/data1/bwang"  
-  #storage_node="nfs004";   
-  #main_dir =os.path.join(my_home, 'results/'); 
-  #out_dir  =os.path.join(my_home, 'composite_results/');  
-  #db_host="quip3.bmi.stonybrook.edu";
-  #db_port="27017"; 
-  #multiple process number  
-  #max_workers=16;
     
   client = MongoClient('mongodb://'+db_host+':'+db_port+'/'); 
    
@@ -131,31 +116,7 @@ if __name__ == '__main__':
   
   images2 =db2.images; 
   metadata2=db2.metadata;
-  objects2 = db2.objects;
-     
-  
-  """
-  input_file="caseid_perfix_algorithm.txt"
-  analysis_list_csv = os.path.join(my_home, input_file);         
-  if not os.path.isfile(analysis_list_csv):
-    print "caseid_perfix_algorithm file is not available."
-    exit();  
-  
-  print '--- read master CSV file ---- ';  
-  index=0;
-  analysis_list=[];   
-  with open(analysis_list_csv, 'r') as my_file:
-    reader = csv.reader(my_file, delimiter=',')
-    my_list = list(reader);
-    for each_row in my_list:      
-      tmp_analysis_list=[[],[],[]]; 
-      tmp_analysis_list[0]= each_row[0];
-      tmp_analysis_list[1]= each_row[1];
-      tmp_analysis_list[2]= each_row[2];   
-      analysis_list.append(tmp_analysis_list);                
-  print "total rows from master csv file is %d " % len(analysis_list) ; 
-  """
-  
+  objects2 = db2.objects;  
     
   def getPrefix(case_id,algorithm):
     prefix="";    
@@ -217,31 +178,7 @@ if __name__ == '__main__':
   print "final user and case_id combination is  %d " % len(process_list) ; 
   print "-----------------------------------------";
   #print process_list;
-  #exit();
- 
-  """
-  print " --- ----  copy all results files from storage node ----";
-  for tmp_user_case_id in  process_list:
-    case_id=tmp_user_case_id[0];
-    user=tmp_user_case_id[1];
-    prefixs_algorithm=tmp_user_case_id[2];    
-    print " --- case_id  and user are %s / %s  -------" % (case_id,user);  
-    for tmp_item in prefixs_algorithm:
-      prefix = tmp_item[0];
-      algorithm = tmp_item[1];    
-      print "--- algorithm is " +algorithm + "------"      
-      local_img_folder = os.path.join(main_dir, case_id);
-      local_folder = os.path.join(local_img_folder, prefix);      
-      if not os.path.exists(local_folder):
-        print '%s folder do not exist, then create it.' % local_folder;
-        os.makedirs(local_folder);        
-      if os.path.isdir(local_folder) and len(os.listdir(local_folder)) > 0: 
-        print " all csv and json files have been copied from data node.";
-      else:        
-        print " No  csv and json files have been copied from data node yet.";         
-        continue;
-  """
-   
+  #exit();   
               
   print " --- ----  start the loop of  case_id  and user combination ----";  
   for user_case_id in  process_list:
@@ -624,14 +561,6 @@ if __name__ == '__main__':
         objects2.insert_one(annotation);
       print str(case_id)+ " human markup has been added."; 
   exit(); 
-  
-  print ' -- load composite results into quip_comp database ---- ';
-  for item in image_user_list:  
-    case_id=item[0]; 
-    composite_results_folder = os.path.join(composite_results_folder, case_id);
-    subprocess.call(shlex.split('./load_composite_results.sh ' + case_id + '  ' + composite_results_folder ));
-  print ' -- End of loading composite results into quip_comp database ---- ';
-  exit();  
   
   
   
