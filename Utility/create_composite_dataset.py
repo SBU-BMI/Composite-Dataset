@@ -96,24 +96,14 @@ if __name__ == '__main__':
       image_user_list.append(tmp_image_user_list);                
   print "total rows from image_user_list file is %d " % len(image_user_list) ; 
   print image_user_list;
-  #exit();
-  
-  print ' -- load composite results into quip_comp database ---- ';
-  for item in image_user_list:  
-    case_id=item[0]; 
-    subprocess.call(shlex.split('./load_composite_results.sh ' + case_id + '  ' + composite_results_folder ));
-  print ' -- End of loading composite results into quip_comp database ---- ';
-  exit();  
+  #exit();   
     
-  client = MongoClient('mongodb://'+db_host+':'+db_port+'/'); 
-   
+  client = MongoClient('mongodb://'+db_host+':'+db_port+'/');    
   db = client.quip;  
-  db2 = client.quip_comp;
-  
+  db2 = client.quip_comp;  
   images =db.images; 
   metadata=db.metadata;
-  objects = db.objects;
-  
+  objects = db.objects;  
   images2 =db2.images; 
   metadata2=db2.metadata;
   objects2 = db2.objects;  
@@ -562,5 +552,11 @@ if __name__ == '__main__':
       print str(case_id)+ " human markup has been added."; 
   exit(); 
   
+  print ' -- load composite results into quip_comp database ---- ';
+  for item in image_user_list:  
+    case_id=item[0]; 
+    subprocess.call(shlex.split('./load_composite_results.sh ' + case_id + '  ' + composite_results_folder ));
+  print ' -- End of loading composite results into quip_comp database ---- ';
+  exit();
   
   
