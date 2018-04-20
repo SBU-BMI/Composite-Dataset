@@ -1,0 +1,10 @@
+{
+  "segment_results_folder":"/home/feiqiao/shapely/results",
+  "quip_application_folder":"/home/feiqiao/quip",  
+  "db_host":"localhost",
+  "db_port":"27017",
+  "db1_name":"quip",
+  "db2_name":"quip_comp",
+  "image_user_list":"/home/feiqiao/shapely/image_user_list.txt",
+  "image_prefix_algorithm":"/home/feiqiao/shapely/image_prefix_algorithm.txt"
+}
