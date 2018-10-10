@@ -32,7 +32,7 @@ if __name__ == '__main__':
     print '%s folder do not exist, then create it.' % merged_composite_dataset_folder;
     os.makedirs(merged_composite_dataset_folder);
     
-  for case_id_zip in os.listdir(composite_dataset_folder)[1:2]:
+  for case_id_zip in os.listdir(composite_dataset_folder):
     print  case_id_zip;
     case_id=case_id_zip.split('.zip')[0];
     print case_id;
